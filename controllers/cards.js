@@ -1,40 +1,93 @@
 const Cards = require("../models/card");
 
-const getCards = (req, res) => {
-  Cards.find({})
-    .then((cards) => res.send(cards))
-    .catch((err) => res.status(404).send({ message: `${err} не смогли запросить карточку` }));
+const getCards = async (req, res) => {
+  try {
+    const cards = await Cards.find({});
+    res.status(200).send(cards);
+  } catch (err) {
+    res.status(500).send({ message: "Произошла ошибка на сервере" });
+  }
 };
 
-const createCard = (req, res) => {
-  const owner = req.user._id;
-  const { name, link } = req.body;
-  Cards.create({ name, link, owner })
-    .then((card) => res.send(card))
-    .catch((err) => res.status(400).send({ message: `${err} не смагли создать карточку` }));
+const createCard = async (req, res) => {
+  try {
+    const owner = req.user._id;
+    const { name, link } = req.body;
+    const card = await Cards.create({ name, link, owner });
+    res.status(200).send(card);
+  } catch (err) {
+    if (err.errors.name.kind === "required"
+    || err.errors.name.kind === "minlength"
+    || err.errors.name.kind === "maxlength"
+    || err.errors.link.kind === "required"
+    ) {
+      res.status(400).send({ message: "Переданны некорректные данные", ...err });
+      return;
+    }
+    res.status(500).send({ message: "Произошла ошибка на сервере" });
+  }
 };
 
-const deleteCard = (req, res) => {
-  const { cardId } = req.params;
-  Cards.findByIdAndRemove(cardId)
-    .then((card) => res.send(card))
-    .catch((err) => res.status(404).send({ message: `${err} не смагли удалить карточку` }));
+const deleteCard = async (req, res) => {
+  try {
+    const { cardId } = req.params;
+    const delCard = await Cards.findByIdAndRemove(cardId);
+    if (!delCard) {
+      res.status(404).send({ message: `Карточка с указанным _id${cardId} не найдена.` });
+      return;
+    }
+    res.status(200).send(delCard);
+  } catch (err) {
+    res.status(500).send({ message: "Произошла ошибка на сервере" });
+  }
 };
 
-const setLike = (req, res) => {
-  const { cardId } = req.params;
-  const userId = req.user._id;
-  Cards.findByIdAndUpdate({ _id: cardId }, { $addToSet: { likes: userId } }, { new: true })
-    .then((likes) => res.send(likes))
-    .catch((err) => res.status(404).send({ message: `${err} добавить лайк не удалось` }));
+const setLike = async (req, res) => {
+  try {
+    const { cardId } = req.params;
+    const userId = req.user._id;
+    const cardTrue = await Cards.findById({ _id: cardId });
+    if (!cardTrue) {
+      res.status(404).send({ message: `Передан несуществующий _id ${cardId} карточки.` });
+      return;
+    }
+    const addLike = await Cards.findByIdAndUpdate(
+      { _id: cardId },
+      { $addToSet: { likes: userId } },
+      { new: true },
+    );
+    res.status(200).send(addLike);
+  } catch (err) {
+    if (err.kind === "ObjectId") {
+      res.status(404).send({ message: "Передан несуществующий данные", ...err });
+      return;
+    }
+    res.status(500).send({ message: "Произошла ошибка на сервере" });
+  }
 };
 
-const deliteLike = (req, res) => {
-  const { cardId } = req.params;
-  const userId = req.user._id;
-  Cards.findByIdAndUpdate({ _id: cardId }, { $pull: { likes: userId } }, { new: true })
-    .then((likes) => res.send(likes))
-    .catch((err) => res.status(404).send({ message: `${err} добавить лайк не удалось` }));
+const deliteLike = async (req, res) => {
+  try {
+    const { cardId } = req.params;
+    const userId = req.user._id;
+    const cardTrue = await Cards.findById({ _id: cardId });
+    if (!cardTrue) {
+      res.status(404).send({ message: `Передан несуществующий _id ${cardId} карточки.` });
+      return;
+    }
+    const delLike = await Cards.findByIdAndUpdate(
+      { _id: cardId },
+      { $pull: { likes: userId } },
+      { new: true },
+    );
+    res.status(200).send(delLike);
+  } catch (err) {
+    if (err.kind === "ObjectId") {
+      res.status(404).send({ message: "Передан несуществующий данные", ...err });
+      return;
+    }
+    res.status(500).send({ message: "Произошла ошибка на сервере" });
+  }
 };
 
 module.exports = {
