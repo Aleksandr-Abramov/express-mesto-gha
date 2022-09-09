@@ -48,11 +48,12 @@ const createUser = async (req, res) => {
 };
 
 const changeUser = async (req, res) => {
+  const { name, about } = req.body;
+  const { userId } = req.user._id;
   try {
-    const { name, about } = req.body;
-    const { userId } = req.params;
     if (!userId) {
       res.status(404).send({ message: `Пользователь по указанному _id${userId} не найден.` });
+      return;
     }
     if (!name && about) {
       res.status(400).send({ message: "Необходимо заполнить оба поля" });

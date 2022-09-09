@@ -1,7 +1,5 @@
 const express = require("express");
 const mongoose = require("mongoose");
-// const userModel = require("./models/user");
-// const cardModel = require("./models/card");
 const routerUsers = require("./routes/users");
 const routerCards = require("./routes/cards");
 
@@ -25,6 +23,3 @@ app.use((req, res, next) => {
 
 app.use("/", routerUsers);
 app.use("/", routerCards);
-// app.get("/", (req, res) => {
-//   res.send("Hello World!");
-// });
