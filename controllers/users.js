@@ -33,18 +33,10 @@ const createUser = async (req, res) => {
     const user = await User.create({ name, about, avatar });
     res.status(200).send(user);
   } catch (err) {
-    // if (err.errors.about.kind === "minlength"
-    //  || err.errors.about.kind === "required"
-    //  || err.errors.about.kind === "maxlength"
-    //  || err.errors.name.kind === "minlength"
-    //  || err.errors.name.kind === "required"
-    //  || err.errors.name.kind === "maxlength"
-    //  || err.errors.avatar.kind === "required") {
-    //   res.status(400).send({ message: "Не удалось создать пользователя, данные не корректны", ...err });
-    //   return;
-    // }
-    if (err.errors.name.name === "ValidatorError") {
-      res.status(400).send({ message: "Не удалось создать пользователя, данные не корректны", ...err });
+    if (err.name === "ValidationError") {
+      res
+        .status(400)
+        .send({ message: "Не удалось создать пользователя, данные не корректны", ...err });
       return;
     }
     res.status(500).send({ message: "произошла ошибка на сервере" });
@@ -72,7 +64,9 @@ const changeUser = async (req, res) => {
     res.status(200).send(user);
   } catch (err) {
     if (err) {
-      res.status(400).send({ message: "Переданы некорректные данные при обновлении профиля.", ...err });
+      res
+        .status(400)
+        .send({ message: "Переданы некорректные данные при обновлении профиля.", ...err });
       return;
     }
     res.status(500).send({ message: "произошла ошибка на сервере" });
@@ -95,7 +89,9 @@ const changeAvatar = async (req, res) => {
     res.status(200).send(avtarData);
   } catch (err) {
     if (err) {
-      res.status(400).send({ message: "Переданы некорректные данные при обновлении аватара.", ...err });
+      res
+        .status(400)
+        .send({ message: "Переданы некорректные данные при обновлении аватара.", ...err });
     }
     res.status(500).send({ message: "произошла ошибка на сервере" });
   }
