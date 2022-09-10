@@ -33,13 +33,17 @@ const createUser = async (req, res) => {
     const user = await User.create({ name, about, avatar });
     res.status(200).send(user);
   } catch (err) {
-    if (err.errors.about.kind === "minlength"
-     || err.errors.about.kind === "required"
-     || err.errors.about.kind === "maxlength"
-     || err.errors.name.kind === "minlength"
-     || err.errors.name.kind === "required"
-     || err.errors.name.kind === "maxlength"
-     || err.errors.avatar.kind === "required") {
+    // if (err.errors.about.kind === "minlength"
+    //  || err.errors.about.kind === "required"
+    //  || err.errors.about.kind === "maxlength"
+    //  || err.errors.name.kind === "minlength"
+    //  || err.errors.name.kind === "required"
+    //  || err.errors.name.kind === "maxlength"
+    //  || err.errors.avatar.kind === "required") {
+    //   res.status(400).send({ message: "Не удалось создать пользователя, данные не корректны", ...err });
+    //   return;
+    // }
+    if (err.errors.name.name === "ValidatorError") {
       res.status(400).send({ message: "Не удалось создать пользователя, данные не корректны", ...err });
       return;
     }
