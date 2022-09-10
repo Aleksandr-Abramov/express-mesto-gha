@@ -55,7 +55,7 @@ const setLike = async (req, res) => {
     res.status(200).send(addLike);
   } catch (err) {
     if (err.kind === "ObjectId") {
-      res.status(404).send({ message: "Передан несуществующий данные", ...err });
+      res.status(400).send({ message: "Переданы несуществующий данные", ...err });
       return;
     }
     res.status(500).send({ message: "Произошла ошибка на сервере" });
@@ -68,7 +68,7 @@ const deliteLike = async (req, res) => {
     const userId = req.user._id;
     const cardTrue = await Cards.findById({ _id: cardId });
     if (!cardTrue) {
-      res.status(404).send({ message: `Передан несуществующий _id ${cardId} карточки.` });
+      res.status(400).send({ message: `Передан несуществующий _id ${cardId} карточки.` });
       return;
     }
     const delLike = await Cards.findByIdAndUpdate(
@@ -79,11 +79,15 @@ const deliteLike = async (req, res) => {
     res.status(200).send(delLike);
   } catch (err) {
     if (err.kind === "ObjectId") {
-      res.status(404).send({ message: "Передан несуществующий данные", ...err });
+      res.status(400).send({ message: "Переданы несуществующий данные", ...err });
       return;
     }
     res.status(500).send({ message: "Произошла ошибка на сервере" });
   }
+};
+
+const page404 = (req, res) => {
+  res.send({ message: "ошибка 404, страницы не существует" });
 };
 
 module.exports = {
@@ -92,4 +96,5 @@ module.exports = {
   deleteCard,
   setLike,
   deliteLike,
+  page404,
 };

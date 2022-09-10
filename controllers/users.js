@@ -14,13 +14,13 @@ const getUserById = async (req, res) => {
     const { userId } = req.params;
     const user = await User.findById({ _id: userId });
     if (!user) {
-      res.status(400).send({ message: `Пользователь по указанному _id${userId} не найден.` });
+      res.status(404).send({ message: `Пользователь по указанному _id ${userId} не найден.` });
       return;
     }
     res.status(200).send(user);
   } catch (err) {
     if (err.kind === "ObjectId") {
-      res.status(404).send({ message: "данные не корректны", ...err });
+      res.status(400).send({ message: "данные не корректны", ...err });
       return;
     }
     res.status(500).send({ message: "произошла ошибка на сервере" });
