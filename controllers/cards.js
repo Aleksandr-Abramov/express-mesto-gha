@@ -16,11 +16,7 @@ const createCard = async (req, res) => {
     const card = await Cards.create({ name, link, owner });
     res.status(200).send(card);
   } catch (err) {
-    if (err.errors.name.kind === "required"
-    || err.errors.name.kind === "minlength"
-    || err.errors.name.kind === "maxlength"
-    || err.errors.link.kind === "required"
-    ) {
+    if (err.name === "ValidationError") {
       res.status(400).send({ message: "Переданны некорректные данные", ...err });
       return;
     }

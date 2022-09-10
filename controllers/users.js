@@ -14,7 +14,7 @@ const getUserById = async (req, res) => {
     const { userId } = req.params;
     const user = await User.findById({ _id: userId });
     if (!user) {
-      res.status(404).send({ message: `Пользователь по указанному _id${userId} не найден.` });
+      res.status(400).send({ message: `Пользователь по указанному _id${userId} не найден.` });
       return;
     }
     res.status(200).send(user);
@@ -74,12 +74,13 @@ const changeUser = async (req, res) => {
 };
 
 const changeAvatar = async (req, res) => {
-  try {
-    const { avatar } = req.body;
-    const id = req.params;
+  const { avatar } = req.body;
+  const id = req.user._id;
 
+  try {
     if (!id) {
       res.status(404).send({ message: `Пользователь по указанному _id${id} не найден.` });
+      return;
     }
     const avtarData = await User.findByIdAndUpdate(
       { _id: id },
