@@ -49,10 +49,11 @@ const createUser = async (req, res) => {
 
 const changeUser = async (req, res) => {
   const { name, about } = req.body;
-  const { userId } = req.user._id;
+  const id = req.user._id;
+
   try {
-    if (!userId) {
-      res.status(404).send({ message: `Пользователь по указанному _id${userId} не найден.` });
+    if (!id) {
+      res.status(404).send({ message: `Пользователь по указанному _id ${id} не найден.` });
       return;
     }
     if (!name && about) {
@@ -60,7 +61,7 @@ const changeUser = async (req, res) => {
       return;
     }
     const user = await User.findByIdAndUpdate(
-      { _id: req.user._id },
+      { _id: id },
       { name: name, about: about },
       { new: true, runValidators: true },
     );
@@ -77,7 +78,7 @@ const changeUser = async (req, res) => {
 const changeAvatar = async (req, res) => {
   try {
     const { avatar } = req.body;
-    const id = req.user._id;
+    const id = req.params;
 
     if (!id) {
       res.status(404).send({ message: `Пользователь по указанному _id${id} не найден.` });
