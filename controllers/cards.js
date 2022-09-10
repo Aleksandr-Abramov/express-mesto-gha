@@ -27,13 +27,22 @@ const createCard = async (req, res) => {
 const deleteCard = async (req, res) => {
   try {
     const { cardId } = req.params;
-    const delCard = await Cards.findByIdAndRemove(cardId);
-    if (!delCard) {
-      res.status(400).send({ message: `Карточка с указанным _id${cardId} не найдена.` });
+    const cardTrue = await Cards.findById({ _id: cardId });
+    if (!cardTrue) {
+      res.status(404).send({ message: `Карточка с указанным _id${cardId} не найдена.` });
       return;
     }
+    const delCard = await Cards.findByIdAndRemove(cardTrue);
+    // if (!delCard) {
+    //   res.status(400).send({ message: `Карточка с указанным _id${cardId} не найдена.` });
+    //   return;
+    // }
     res.status(200).send(delCard);
   } catch (err) {
+    if (err.name === "CastError") {
+      res.status(400).send({ message: "Переданны некорректные данные", ...err });
+      return;
+    }
     res.status(500).send({ message: "Произошла ошибка на сервере" });
   }
 };
