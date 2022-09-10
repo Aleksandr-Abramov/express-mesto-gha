@@ -29,7 +29,7 @@ const deleteCard = async (req, res) => {
     const { cardId } = req.params;
     const delCard = await Cards.findByIdAndRemove(cardId);
     if (!delCard) {
-      res.status(404).send({ message: `Карточка с указанным _id${cardId} не найдена.` });
+      res.status(400).send({ message: `Карточка с указанным _id${cardId} не найдена.` });
       return;
     }
     res.status(200).send(delCard);
@@ -68,7 +68,7 @@ const deliteLike = async (req, res) => {
     const userId = req.user._id;
     const cardTrue = await Cards.findById({ _id: cardId });
     if (!cardTrue) {
-      res.status(400).send({ message: `Передан несуществующий _id ${cardId} карточки.` });
+      res.status(404).send({ message: `Передан несуществующий _id ${cardId} карточки.` });
       return;
     }
     const delLike = await Cards.findByIdAndUpdate(
@@ -87,7 +87,7 @@ const deliteLike = async (req, res) => {
 };
 
 const page404 = (req, res) => {
-  res.send({ message: "ошибка 404, страницы не существует" });
+  res.status(404).send({ message: "ошибка 404, страницы не существует" });
 };
 
 module.exports = {
