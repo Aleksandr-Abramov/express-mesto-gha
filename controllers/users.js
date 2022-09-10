@@ -29,7 +29,7 @@ const getUserById = async (req, res) => {
 
 const createUser = async (req, res) => {
   try {
-    const { name, about, avatar } = req.body;
+    const { name, about, avatar } = await req.body;
     const user = await User.create({ name, about, avatar });
     res.status(200).send(user);
   } catch (err) {
