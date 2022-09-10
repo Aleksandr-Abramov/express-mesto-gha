@@ -10,9 +10,6 @@ const {
   page404,
 } = require("../controllers/cards");
 
-// routerCards.get("/", express.json(), (req, res) => {
-//   res.send(console.log("dsadsa"));
-// });
 routerCards.get("/cards", getCards);
 routerCards.post("/cards", express.json(), createCard);
 routerCards.delete("/cards/:cardId", deleteCard);

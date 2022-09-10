@@ -33,10 +33,6 @@ const deleteCard = async (req, res) => {
       return;
     }
     const delCard = await Cards.findByIdAndRemove(cardTrue);
-    // if (!delCard) {
-    //   res.status(400).send({ message: `Карточка с указанным _id${cardId} не найдена.` });
-    //   return;
-    // }
     res.status(200).send(delCard);
   } catch (err) {
     if (err.name === "CastError") {
