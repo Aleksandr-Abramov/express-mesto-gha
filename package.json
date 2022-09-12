@@ -7,7 +7,7 @@
     "lint": "npx eslint .",
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "dev:inspect": "node --inspect index.js"
+    "dev:inspect": "node --inspect app.js"
   },
   "repository": {
     "type": "git",
@@ -24,7 +24,6 @@
     "eslint": "^8.23.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-react": "^7.31.5",
     "nodemon": "^2.0.19"
   },
   "dependencies": {
