@@ -24,6 +24,6 @@ app.use(express.json());
 
 app.use("/", routerUsers);
 app.use("/", routerCards);
-app.use("/", (req, res) => {
+app.use("/*", (req, res) => {
   res.status(NOT404FOUND).send({ message: "ошибка 404, страницы не существует" });
 });
