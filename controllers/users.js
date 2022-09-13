@@ -41,7 +41,7 @@ const createUser = async (req, res) => {
   } catch (err) {
     if (err.name === "ValidationError") {
       res
-        .status(400)
+        .status(BAD400REQUEST)
         .send({ message: "Не удалось создать пользователя, данные не корректны" });
       return;
     }
