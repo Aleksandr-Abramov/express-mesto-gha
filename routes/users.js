@@ -35,15 +35,23 @@ routerUsers.post("/signup", celebrate({
   body: Joi.object().keys({
     name: Joi.string().max(30).min(2),
     about: Joi.string().max(30).min(2),
-    avatar: Joi.string(),
-    email: Joi.string().email(),
-    password: Joi.string().min(3),
+    avatar: Joi
+      .string()
+      .pattern(/https?:\/\/(w{3})?[a-z0-9-]+\.[a-z0-9\S]{2,}/),
+    email: Joi
+      .string()
+      .pattern(/^[\w-\\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+      .required(),
+    password: Joi.string().required(),
   }),
 }), createUser);
 routerUsers.post("/signin", celebrate({
   body: Joi.object().keys({
-    email: Joi.string().max(30).min(2),
-    password: Joi.string().max(30).min(2),
+    email: Joi
+      .string()
+      .pattern(/^[\w-\\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+      .required(),
+    password: Joi.string().required(),
   }),
 }), login);
 
