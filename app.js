@@ -12,6 +12,11 @@ const { NOT404FOUND } = require("./utils/constants");
 const app = express();
 const { PORT = 3000 } = process.env;
 
+app.use((req, res, next) => {
+  req.user = {
+    _id: '5d8b8592978f8bd833ca8133'
+  };
+
 app.use(express.json());
 app.use(cookieParser());
 
