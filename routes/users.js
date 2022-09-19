@@ -21,7 +21,9 @@ routerUsers.get("/users/:userId/", auth, celebrate({
 }), getUserById);
 routerUsers.patch("/users/me/avatar", auth, celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string(),
+    avatar: Joi
+      .string()
+      .pattern(/https?:\/\/(w{3})?[a-z0-9-]+\.[a-z0-9\S]{2,}/),
   }),
 }), changeAvatar);
 routerUsers.patch("/users/me/", auth, celebrate({
