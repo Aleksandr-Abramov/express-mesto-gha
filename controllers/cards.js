@@ -1,21 +1,27 @@
 const Cards = require("../models/card");
+const Bad400Request = require("../utils/errors/Bad400Request");
+const Not404Found = require("../utils/errors/Not404Found");
+const Server500Err = require("../utils/errors/Server500Err");
+const Unauthorized401 = require("../utils/errors/Unauthorized401");
+
 const {
   HTTP200OK,
-  SERVER500ERR,
-  NOT404FOUND,
-  BAD400REQUEST,
+  // SERVER500ERR,
+  // NOT404FOUND,
+  // BAD400REQUEST,
+  // UNAUTHORIZED401,
 } = require("../utils/constants");
 
-const getCards = async (req, res) => {
+const getCards = async (req, res, next) => {
   try {
     const cards = await Cards.find({});
     res.status(HTTP200OK).send(cards);
   } catch (err) {
-    res.status(SERVER500ERR).send({ message: "Произошла ошибка на сервере" });
+    next(new Server500Err("Произошла ошибка на сервере"));
   }
 };
 
-const createCard = async (req, res) => {
+const createCard = async (req, res, next) => {
   try {
     const owner = req.user._id;
     const { name, link } = req.body;
@@ -23,32 +29,42 @@ const createCard = async (req, res) => {
     res.status(HTTP200OK).send(card);
   } catch (err) {
     if (err.name === "ValidationError") {
-      res.status(BAD400REQUEST).send({ message: "Переданны некорректные данные" });
+      next(new Bad400Request("Переданны некорректные данные"));
       return;
     }
-    res.status(SERVER500ERR).send({ message: "Произошла ошибка на сервере" });
+    next(new Server500Err("Произошла ошибка на сервере"));
   }
 };
 
-const deleteCard = async (req, res) => {
+const deleteCard = async (req, res, next) => {
   try {
     const { cardId } = req.params;
-    const delCard = await Cards.findByIdAndRemove(cardId);
-    if (!delCard) {
-      res.status(NOT404FOUND).send({ message: `Карточка с указанным _id${cardId} не найдена.` });
+    const { _id } = req.user;
+    const card = await Cards.findById(cardId);
+    if (!card) {
+      next(new Not404Found(`Карточка с указанным _id${cardId} не найдена`));
       return;
     }
+    if (!_id) {
+      next(new Not404Found(`Пользователь ${_id} не найден`));
+      return;
+    }
+    if (_id !== String(card.owner._id)) {
+      next(new Unauthorized401("Вы не можите удалять не свою карточку"));
+      return;
+    }
+    const delCard = await Cards.findByIdAndRemove(cardId);
     res.status(HTTP200OK).send(delCard);
   } catch (err) {
     if (err.name === "CastError") {
-      res.status(BAD400REQUEST).send({ message: "Переданны некорректные данные" });
+      next(new Bad400Request("Переданны некорректные данные"));
       return;
     }
-    res.status(SERVER500ERR).send({ message: "Произошла ошибка на сервере" });
+    next(new Server500Err("Произошла ошибка на сервере"));
   }
 };
 
-const setLike = async (req, res) => {
+const setLike = async (req, res, next) => {
   try {
     const { cardId } = req.params;
     const userId = req.user._id;
@@ -58,20 +74,20 @@ const setLike = async (req, res) => {
       { new: true },
     );
     if (!addLike) {
-      res.status(NOT404FOUND).send({ message: `Передан несуществующий _id ${cardId} карточки.` });
+      next(new Not404Found(`Передан несуществующий _id ${cardId} карточки.`));
       return;
     }
     res.status(HTTP200OK).send(addLike);
   } catch (err) {
     if (err.kind === "ObjectId") {
-      res.status(BAD400REQUEST).send({ message: "Переданы несуществующий данные" });
+      next(new Bad400Request("Переданы несуществующий данные"));
       return;
     }
-    res.status(SERVER500ERR).send({ message: "Произошла ошибка на сервере" });
+    next(new Server500Err("Произошла ошибка на сервере"));
   }
 };
 
-const deliteLike = async (req, res) => {
+const deliteLike = async (req, res, next) => {
   try {
     const { cardId } = req.params;
     const userId = req.user._id;
@@ -81,16 +97,16 @@ const deliteLike = async (req, res) => {
       { new: true },
     );
     if (!delLike) {
-      res.status(NOT404FOUND).send({ message: `Передан несуществующий _id ${cardId} карточки.` });
+      next(new Not404Found(`Передан несуществующий _id ${cardId} карточки.`));
       return;
     }
     res.status(HTTP200OK).send(delLike);
   } catch (err) {
     if (err.kind === "ObjectId") {
-      res.status(BAD400REQUEST).send({ message: "Переданы несуществующий данные" });
+      next(new Bad400Request("Переданы несуществующие данные"));
       return;
     }
-    res.status(SERVER500ERR).send({ message: "Произошла ошибка на сервере" });
+    next(new Server500Err("Произошла ошибка на сервере"));
   }
 };
 
