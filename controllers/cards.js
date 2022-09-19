@@ -2,7 +2,7 @@ const Cards = require("../models/card");
 const Bad400Request = require("../utils/errors/Bad400Request");
 const Not404Found = require("../utils/errors/Not404Found");
 const Server500Err = require("../utils/errors/Server500Err");
-const Unauthorized401 = require("../utils/errors/Unauthorized401");
+const Forbidden403 = require("../utils/errors/Forbidden403");
 
 const {
   HTTP200OK,
@@ -50,7 +50,7 @@ const deleteCard = async (req, res, next) => {
       return;
     }
     if (_id !== String(card.owner._id)) {
-      next(new Unauthorized401("Вы не можите удалять не свою карточку"));
+      next(new Forbidden403("Вы не можите удалять не свою карточку"));
       return;
     }
     const delCard = await Cards.findByIdAndRemove(cardId);

@@ -63,7 +63,14 @@ const createUser = async (req, res, next) => {
       email: email,
       password: hashPass,
     });
-    res.status(HTTP200OK).send(user);
+    const resUser = {
+      name: user.name,
+      about: user.about,
+      avatar: user.avatar,
+      email: user.email,
+    };
+    console.log(resUser);
+    res.status(HTTP200OK).send(resUser);
   } catch (err) {
     if (err.name === "ValidationError") {
       next(new Bad400Request("Не удалось создать пользователя, данные не корректны"));
