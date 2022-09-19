@@ -31,7 +31,7 @@ routerUsers.patch("/users/me/", auth, celebrate({
   }),
 }), changeUser);
 
-routerUsers.post("/users/signup", celebrate({
+routerUsers.post("/signup", celebrate({
   body: Joi.object().keys({
     name: Joi.string().max(30).min(2),
     about: Joi.string().max(30).min(2),
@@ -40,7 +40,7 @@ routerUsers.post("/users/signup", celebrate({
     password: Joi.string().min(3),
   }),
 }), createUser);
-routerUsers.post("/users/signin", celebrate({
+routerUsers.post("/signin", celebrate({
   body: Joi.object().keys({
     email: Joi.string().max(30).min(2),
     password: Joi.string().max(30).min(2),
