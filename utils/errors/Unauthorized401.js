@@ -1,6 +1,6 @@
 module.exports = class Unauthorized401 extends Error {
-  constructor(message, status) {
+  constructor(message) {
     super(message);
-    this.statusCode = status;
+    this.statusCode = 401;
   }
 };

@@ -9,7 +9,7 @@ const auth = (req, res, next) => {
     //   .status(UNAUTHORIZED401)
     //   .send({ message: "Необходима авторизация" });
     // return next(new Unauthorized401("Необходима авторизация"));
-    return next(new Unauthorized401("Необходима авторизация", 401));
+    return next(new Unauthorized401("Необходима авторизация"));
   }
   // const token = userJwt.replace("Bearer ", "");
   let payload;
@@ -19,7 +19,7 @@ const auth = (req, res, next) => {
     // return res
     //   .status(UNAUTHORIZED401)
     //   .send({ message: "Необходима авторизация" });
-    return next(new Unauthorized401("Необходима авторизация", 401));
+    return next(new Unauthorized401("Необходима авторизация"));
   }
   req.user = payload;
   return next();
