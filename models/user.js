@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
 const { isEmail } = require("validator");
-// const { default: isEmail } = require("validator/lib/isEmail");
-// const { default: isEmail } = require("validator/lib/isEmail");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -42,7 +40,6 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minlength: 3,
     select: false,
   },
 });

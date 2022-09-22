@@ -9,19 +9,10 @@ const Not404Found = require("../utils/errors/Not404Found");
 const Server500Err = require("../utils/errors/Server500Err");
 const Unauthorized401 = require("../utils/errors/Unauthorized401");
 
-const {
-  HTTP200OK,
-  // SERVER500ERR,
-  // NOT404FOUND,
-  // BAD400REQUEST,
-  // UNAUTHORIZED401,
-  // HTTP409CONFLICTING,
-} = require("../utils/constants");
-
 const getUsers = async (req, res, next) => {
   try {
     const users = await User.find({});
-    res.status(HTTP200OK).send(users);
+    res.send(users);
   } catch (err) {
     next(new Server500Err("произошла ошибка на сервере"));
   }
@@ -35,7 +26,7 @@ const getUserById = async (req, res, next) => {
       next(new Not404Found(`Пользователь по указанному _id ${userId} не найден.`));
       return;
     }
-    res.status(HTTP200OK).send(user);
+    res.send(user);
   } catch (err) {
     if (err.kind === "ObjectId") {
       next(new Bad400Request("данные не корректны"));
@@ -69,8 +60,7 @@ const createUser = async (req, res, next) => {
       avatar: user.avatar,
       email: user.email,
     };
-    console.log(resUser);
-    res.status(HTTP200OK).send(resUser);
+    res.send(resUser);
   } catch (err) {
     if (err.name === "ValidationError") {
       next(new Bad400Request("Не удалось создать пользователя, данные не корректны"));
@@ -110,7 +100,7 @@ const login = async (req, res, next) => {
       httpOnly: true,
       someSite: true,
     });
-    res.status(200).send({ message: user }).end();
+    res.send({ message: "Успешных вход" }).end();
   } catch (err) {
     next(new Server500Err("произошла ошибка на сервере"));
   }
@@ -121,20 +111,20 @@ const changeUser = async (req, res, next) => {
   const id = req.user._id;
 
   try {
-    if (!name || !about) {
-      next(new Bad400Request("Необходимо заполнить оба поля"));
-      return;
-    }
+    // if (!name || !about) {
+    //   next(new Bad400Request("Необходимо заполнить оба поля"));
+    //   return;
+    // }
     const user = await User.findByIdAndUpdate(
       { _id: id },
       { name: name, about: about },
       { new: true, runValidators: true },
     );
-    if (!user) {
-      next(new Not404Found(`Пользователь по указанному _id ${id} не найден.`));
-      return;
-    }
-    res.status(HTTP200OK).send(user);
+    // if (!user) {
+    //   next(new Not404Found(`Пользователь по указанному _id ${id} не найден.`));
+    //   return;
+    // }
+    res.send(user);
   } catch (err) {
     if ((err.name === "ValidationError")) {
       next(new Bad400Request("Переданы некорректные данные при обновлении профиля."));
@@ -158,7 +148,7 @@ const changeAvatar = async (req, res, next) => {
       next(new Not404Found(`Пользователь по указанному _id${id} не найден.`));
       return;
     }
-    res.status(HTTP200OK).send(avtarData);
+    res.send(avtarData);
   } catch (err) {
     if ((err.name === "ValidationError")) {
       next(new Bad400Request("Переданы некорректные данные при обновлении аватара."));
@@ -175,7 +165,7 @@ const infoUser = async (req, res, next) => {
     if (!user) {
       return next(new Not404Found(`Пользователь по указанному _id ${_id} не найден.`));
     }
-    return res.status(HTTP200OK).send(user);
+    return res.send(user);
   } catch (err) {
     return next(new Server500Err("произошла ошибка на сервере"));
   }

@@ -27,17 +27,17 @@ routerCards.post("/cards", auth, celebrate({
 }), createCard);
 routerCards.delete("/cards/:cardId", auth, celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24),
+    cardId: Joi.string().length(24).hex().required(),
   }),
 }), deleteCard);
 routerCards.put("/cards/:cardId/likes", auth, celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24),
+    cardId: Joi.string().length(24).hex().required(),
   }),
 }), setLike);
 routerCards.delete("/cards/:cardId/likes", auth, celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24),
+    cardId: Joi.string().length(24).hex().required(),
   }),
 }), deliteLike);
 module.exports = routerCards;

@@ -16,7 +16,7 @@ routerUsers.get("/users", auth, getUsers);
 routerUsers.get("/users/me/", auth, infoUser);
 routerUsers.get("/users/:userId/", auth, celebrate({
   params: Joi.object().keys({
-    userId: Joi.string().alphanum().length(24),
+    userId: Joi.string().length(24).hex().required(),
   }),
 }), getUserById);
 routerUsers.patch("/users/me/avatar", auth, celebrate({
@@ -42,7 +42,8 @@ routerUsers.post("/signup", celebrate({
       .pattern(/https?:\/\/(w{3})?[a-z0-9-]+\.[a-z0-9\S]{2,}/),
     email: Joi
       .string()
-      .pattern(/^[\w-\\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+      // .pattern(/^[\w-\\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+      .email()
       .required(),
     password: Joi.string().required(),
   }),
@@ -51,7 +52,8 @@ routerUsers.post("/signin", celebrate({
   body: Joi.object().keys({
     email: Joi
       .string()
-      .pattern(/^[\w-\\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+      // .pattern(/^[\w-\\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+      .email()
       .required(),
     password: Joi.string().required(),
   }),
