@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 // const { UNAUTHORIZED401 } = require("../utils/constants");
-const { Unauthorized401 } = require("../utils/errors/Unauthorized401");
+const Unauthorized401 = require("../utils/errors/Unauthorized401");
 
 const auth = (req, res, next) => {
   const { token } = req.cookies;
@@ -8,7 +8,8 @@ const auth = (req, res, next) => {
     // return res
     //   .status(UNAUTHORIZED401)
     //   .send({ message: "Необходима авторизация" });
-    next(new Unauthorized401("Необходима авторизация"));
+    // return next(new Unauthorized401("Необходима авторизация"));
+    return next(new Unauthorized401("Необходима авторизация", 401));
   }
   // const token = userJwt.replace("Bearer ", "");
   let payload;
@@ -18,7 +19,7 @@ const auth = (req, res, next) => {
     // return res
     //   .status(UNAUTHORIZED401)
     //   .send({ message: "Необходима авторизация" });
-    next(new Unauthorized401("Необходима авторизация"));
+    return next(new Unauthorized401("Необходима авторизация", 401));
   }
   req.user = payload;
   return next();
