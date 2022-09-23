@@ -110,19 +110,11 @@ const changeUser = async (req, res, next) => {
   const id = req.user._id;
 
   try {
-    // if (!name || !about) {
-    //   next(new Bad400Request("Необходимо заполнить оба поля"));
-    //   return;
-    // }
     const user = await User.findByIdAndUpdate(
       { _id: id },
       { name: name, about: about },
       { new: true, runValidators: true },
     );
-    // if (!user) {
-    //   next(new Not404Found(`Пользователь по указанному _id ${id} не найден.`));
-    //   return;
-    // }
     res.send(user);
   } catch (err) {
     if ((err.name === "ValidationError")) {
