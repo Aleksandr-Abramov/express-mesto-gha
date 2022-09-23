@@ -59,7 +59,6 @@ const createUser = async (req, res, next) => {
       avatar: user.avatar,
       email: user.email,
     };
-    console.log(resUser);
     res.send(resUser);
   } catch (err) {
     if (err.name === "ValidationError") {
@@ -100,7 +99,7 @@ const login = async (req, res, next) => {
       httpOnly: true,
       someSite: true,
     });
-    res.send({ message: user }).end();
+    res.send({ message: "Успешный вход" }).end();
   } catch (err) {
     next(new Server500Err("произошла ошибка на сервере"));
   }
@@ -111,19 +110,19 @@ const changeUser = async (req, res, next) => {
   const id = req.user._id;
 
   try {
-    if (!name || !about) {
-      next(new Bad400Request("Необходимо заполнить оба поля"));
-      return;
-    }
+    // if (!name || !about) {
+    //   next(new Bad400Request("Необходимо заполнить оба поля"));
+    //   return;
+    // }
     const user = await User.findByIdAndUpdate(
       { _id: id },
       { name: name, about: about },
       { new: true, runValidators: true },
     );
-    if (!user) {
-      next(new Not404Found(`Пользователь по указанному _id ${id} не найден.`));
-      return;
-    }
+    // if (!user) {
+    //   next(new Not404Found(`Пользователь по указанному _id ${id} не найден.`));
+    //   return;
+    // }
     res.send(user);
   } catch (err) {
     if ((err.name === "ValidationError")) {
