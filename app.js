@@ -9,17 +9,10 @@ const errorHendler = require("./middlewares/errorHendler");
 const auth = require("./middlewares/auth");
 
 // const { NOT404FOUND } = require("./utils/constants");
-const { Not404Found } = require("./utils/errors/Not404Found");
+const Not404Found = require("./utils/errors/Not404Found");
 
 const app = express();
 const { PORT = 3000 } = process.env;
-app.use((req, res, next) => {
-  req.user = {
-    _id: "5d8b8592978f8bd833ca8133",
-  };
-
-  next();
-});
 
 app.use(express.json());
 app.use(cookieParser());
