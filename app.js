@@ -8,7 +8,6 @@ const routerCards = require("./routes/cards");
 const errorHendler = require("./middlewares/errorHendler");
 const auth = require("./middlewares/auth");
 
-// const { NOT404FOUND } = require("./utils/constants");
 const Not404Found = require("./utils/errors/Not404Found");
 
 const app = express();
@@ -20,7 +19,6 @@ app.use(cookieParser());
 app.use("/", routerUsers);
 app.use("/", routerCards);
 app.use("/*", auth, (req, res, next) => {
-  // res.status(NOT404FOUND).send({ message: "ошибка 404, страницы не существует" });
   next(new Not404Found("ошибка 404, страницы не существует"));
 });
 app.use(errors());
